@@ -1,4 +1,4 @@
-from tkinter import *
+from Tkinter import *
 
 # look at https://www.simplifiedpython.net/python-calculator/
 
