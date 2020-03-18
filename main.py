@@ -1,5 +1,8 @@
 from Tkinter import *
 
+x = 0
+y = 0
+z = 0
 # look at https://www.simplifiedpython.net/python-calculator/
 
 def iCalc(source, side):
@@ -25,13 +28,20 @@ class app(Frame):
           , bd=30, bg="powder blue").pack(side=TOP,
                                           expand=YES, fill=BOTH)
 
+        variables = StringVar()
+        variables.set('x= ')
+        Entry(self, relief=RIDGE, textvariable=variables,
+              justify='right'
+              , bd=30, bg="snow").pack(side=TOP,
+                                              expand=YES, fill=BOTH)
+
         for clearButton in (["C"]):
             erase = iCalc(self, TOP)
             for ichar in clearButton:
                 button(erase, LEFT, ichar, lambda
                     storeObj=display, q=ichar: storeObj.set(''))
 
-        for numButton in ("789/", "456*", "123-", "0.+"):
+        for numButton in ("123", "456", "789"):
          FunctionNum = iCalc(self, TOP)
          for iEquals in numButton:
             button(FunctionNum, LEFT, iEquals, lambda
