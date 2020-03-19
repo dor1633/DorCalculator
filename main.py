@@ -1,8 +1,5 @@
 from Tkinter import *
 
-x = 0
-y = 0
-z = 0
 # look at https://www.simplifiedpython.net/python-calculator/
 
 def iCalc(source, side):
@@ -17,6 +14,9 @@ def button(source, side, text, command=None):
 
 class app(Frame):
     def __init__(self):
+        self.x = None
+        self.y = None
+        self.z = None
         Frame.__init__(self)
         self.option_add('*Font', 'arial 20 bold')
         self.pack(expand = YES, fill =BOTH)
@@ -43,10 +43,8 @@ class app(Frame):
 
         for numButton in ("123", "456", "789"):
          FunctionNum = iCalc(self, TOP)
-         for iEquals in numButton:
-            button(FunctionNum, LEFT, iEquals, lambda
-                storeObj=display, q=iEquals: storeObj
-                   .set(storeObj.get() + q))
+         for number in numButton:
+             button(FunctionNum, LEFT, number, lambda text=variables, q=number: self.onPressNumber(q, text))
 
         EqualButton = iCalc(self, TOP)
         for iEquals in "=":
@@ -66,6 +64,12 @@ class app(Frame):
                 display.set(eval(display.get()))
             except:
                 display.set("ERROR")
+
+    def onPressNumber(self, number, text):
+        if(self.x == None):
+            self.x = number
+        print("number", self.x)
+        text.set('mdmdm')
 
 
 if __name__=='__main__':
