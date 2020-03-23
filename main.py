@@ -66,10 +66,18 @@ class app(Frame):
                 display.set("ERROR")
 
     def onPressNumber(self, number, text):
+        variablesText = ''
         if(self.x == None):
             self.x = number
-        print("number", self.x)
-        text.set('mdmdm')
+            variablesText = text.get() + self.x + ' Y='
+        elif(self.y == None):
+            self.y = number
+            variablesText = text.get() + self.y + ' Z='
+        elif(self.z == None):
+            self.z = number
+            variablesText = text.get() + self.z
+
+        text.set(variablesText)
 
 
 if __name__=='__main__':
