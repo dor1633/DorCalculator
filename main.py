@@ -1,5 +1,5 @@
 from Tkinter import *
-
+import math
 # look at https://www.simplifiedpython.net/python-calculator/
 
 def iCalc(source, side):
@@ -39,7 +39,7 @@ class app(Frame):
             erase = iCalc(self, TOP)
             for ichar in clearButton:
                 button(erase, LEFT, ichar, lambda
-                    storeObj=display, q=ichar: storeObj.set(''))
+                    storeObj=display, q=ichar ,variablesText = variables :self.clear(storeObj, variablesText))
 
         for numButton in ("123", "456", "789"):
          FunctionNum = iCalc(self, TOP)
@@ -60,10 +60,19 @@ class app(Frame):
                                     (storeObj.get() + s))
 
     def calc(self, display):
-            try:
-                display.set(eval(display.get()))
-            except:
-                display.set("ERROR")
+        try:
+            x1 = (-self.y + math.sqrt((self.y ** 2) - (4 * (self.x * self.z)))) / (2 * self.x)
+            x2 = (-self.y - math.sqrt((self.y ** 2) - (4 * (self.x * self.z)))) / (2 * self.x)
+            display.set("X1="+x1 +" x2="+x2)
+        except:
+            display.set("ERROR")
+
+    def clear(self, resultText, variablesText):
+        self.x = 0
+        self.y = 0
+        self.z = 0
+        resultText.set('')
+        variablesText.set('X=')
 
     def onPressNumber(self, number, text):
         variablesText = ''
