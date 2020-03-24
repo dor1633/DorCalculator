@@ -14,9 +14,10 @@ def button(source, side, text, command=None):
 
 class app(Frame):
     def __init__(self):
-        self.x = None
-        self.y = None
-        self.z = None
+        self.a = 0
+        self.b = 0
+        self.c = 0
+        self.currVariableInEquationIndex = 1
         Frame.__init__(self)
         self.option_add('*Font', 'arial 20 bold')
         self.pack(expand = YES, fill =BOTH)
@@ -43,35 +44,49 @@ class app(Frame):
         erase = iCalc(self, TOP)
         button(erase, LEFT, 'C', lambda storeObj=display, q='C', variablesText=variables: self.clear(storeObj, variablesText))
         btniEquals = button(erase, LEFT, '=')
-        btniEquals.bind('<ButtonRelease-1>', lambda e,s=self,
-                        storeObj=display: s.calc(storeObj), '+')
+        btniEquals.bind('<ButtonRelease-1>', lambda e, variablesText=variables,
+                        storeObj=display: self.onPressEqualButton(variablesText))
 
-    def calc(self, display):
-        try:
-            x1 = (-self.y + math.sqrt((self.y ** 2) - (4 * (self.x * self.z)))) / (2 * self.x)
-            x2 = (-self.y - math.sqrt((self.y ** 2) - (4 * (self.x * self.z)))) / (2 * self.x)
-            display.set("X1="+x1 +" X2=" + x2)
-        except:
-            display.set("ERROR")
+    def onPressEqualButton(self, variablesText):
+        addedText = ''
+        if (self.currVariableInEquationIndex < 3):
+            if(self.currVariableInEquationIndex == 1):
+                addedText = ' Y='
+            elif (self.currVariableInEquationIndex == 2):
+                addedText = ' Z='
+            self.currVariableInEquationIndex += 1
+        elif (self.currVariableInEquationIndex == 3):
+            print("noder")
+
+        variablesText.set(variablesText.get() + addedText)
+        # try:
+        #     x1 = (-self.b + math.sqrt((self.b ** 2) - (4 * (self.a * self.c)))) / (2 * self.a)
+        #     x2 = (-self.b - math.sqrt((self.b ** 2) - (4 * (self.a * self.c)))) / (2 * self.a)
+        #     display.set("X1="+x1 +" X2=" + x2)
+        # except:
+        #     display.set("ERROR")
 
     def clear(self, resultText, variablesText):
-        self.x = 0
-        self.y = 0
-        self.z = 0
+        self.a = 0
+        self.b = 0
+        self.c = 0
         resultText.set('')
         variablesText.set('X=')
 
     def onPressNumber(self, number, text):
         variablesText = ''
-        if(self.x == None):
-            self.x = number
-            variablesText = text.get() + self.x + ' Y='
-        elif(self.y == None):
-            self.y = number
-            variablesText = text.get() + self.y + ' Z='
-        elif(self.z == None):
-            self.z = number
-            variablesText = text.get() + self.z
+        intNumber = int(number)
+        if(self.currVariableInEquationIndex == 1):
+            self.a = (self.a * 10) + intNumber
+            print(self.a)
+            print(intNumber)
+            variablesText = text.get() + str(number)
+        elif(self.currVariableInEquationIndex == 2):
+            self.b *= 10 + intNumber
+            variablesText = text.get() + str(number)
+        elif(self.currVariableInEquationIndex == 3):
+            self.c *= 10 + intNumber
+            variablesText = text.get() + str(number)
 
         text.set(variablesText)
 
