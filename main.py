@@ -18,6 +18,7 @@ class app(Frame):
         self.b = 0
         self.c = 0
         self.currVariableInEquationIndex = 1
+        self.numberSign = 1
         Frame.__init__(self)
         self.option_add('*Font', 'arial 20 bold')
         self.pack(expand = YES, fill =BOTH)
@@ -42,12 +43,14 @@ class app(Frame):
              button(FunctionNum, LEFT, number, lambda text=variables, q=number: self.onPressNumber(q, text))
 
         erase = iCalc(self, TOP)
-        button(erase, LEFT, 'C', lambda storeObj=display, q='C', variablesText=variables: self.clear(storeObj, variablesText))
+        button(erase, LEFT, 'C', lambda storeObj=display, variablesText=variables: self.clear(storeObj, variablesText))
+        button(erase, LEFT, '-',
+               lambda: self.updateSignToMinus())
         btniEquals = button(erase, LEFT, '=')
         btniEquals.bind('<ButtonRelease-1>', lambda e, variablesText=variables,
-                        storeObj=display: self.onPressEqualButton(variablesText))
+                        displayResult=display: self.onPressEqualButton(variablesText, displayResult))
 
-    def onPressEqualButton(self, variablesText):
+    def onPressEqualButton(self, variablesText, displayResult):
         addedText = ''
         if (self.currVariableInEquationIndex < 3):
             if(self.currVariableInEquationIndex == 1):
@@ -56,40 +59,47 @@ class app(Frame):
                 addedText = ' Z='
             self.currVariableInEquationIndex += 1
         elif (self.currVariableInEquationIndex == 3):
-            print("noder")
+            try:
+                print(self.a)
+                print(self.b)
+                print(self.c)
+                print(type(self.b))
+                print("x1" + math.sqrt(self.b ** 2))
+                x1 = (-self.b + math.sqrt((self.b ** 2) - (4 * (self.a * self.c)))) / (2 * self.a)
+                x2 = (-self.b - math.sqrt((self.b ** 2) - (4 * (self.a * self.c)))) / (2 * self.a)
+                displayResult.set("X1=" + x1 + " X2=" + x2)
+            except:
+                displayResult.set("ERROR")
 
         variablesText.set(variablesText.get() + addedText)
-        # try:
-        #     x1 = (-self.b + math.sqrt((self.b ** 2) - (4 * (self.a * self.c)))) / (2 * self.a)
-        #     x2 = (-self.b - math.sqrt((self.b ** 2) - (4 * (self.a * self.c)))) / (2 * self.a)
-        #     display.set("X1="+x1 +" X2=" + x2)
-        # except:
-        #     display.set("ERROR")
 
     def clear(self, resultText, variablesText):
         self.a = 0
         self.b = 0
         self.c = 0
+        self.currVariableInEquationIndex = 1
+        self.numberSign = 1
         resultText.set('')
         variablesText.set('X=')
 
+    def updateSignToMinus(self):
+        self.numberSign = -1
+
     def onPressNumber(self, number, text):
         variablesText = ''
-        intNumber = int(number)
+        intNumber = int(number) * self.numberSign
         if(self.currVariableInEquationIndex == 1):
             self.a = (self.a * 10) + intNumber
-            print(self.a)
-            print(intNumber)
-            variablesText = text.get() + str(number)
+            variablesText = text.get() + str(intNumber)
         elif(self.currVariableInEquationIndex == 2):
-            self.b *= 10 + intNumber
-            variablesText = text.get() + str(number)
+            self.b = (self.b * 10) + intNumber
+            variablesText = text.get() + str(intNumber)
         elif(self.currVariableInEquationIndex == 3):
-            self.c *= 10 + intNumber
-            variablesText = text.get() + str(number)
+            self.c = (self.c * 10) + intNumber
+            variablesText = text.get() + str(intNumber)
 
         text.set(variablesText)
-
+        self.numberSign = 1
 
 if __name__=='__main__':
  app().mainloop()
