@@ -35,35 +35,22 @@ class app(Frame):
               , bd=30, bg="snow").pack(side=TOP,
                                               expand=YES, fill=BOTH)
 
-        for clearButton in (["C"]):
-            erase = iCalc(self, TOP)
-            for ichar in clearButton:
-                button(erase, LEFT, ichar, lambda
-                    storeObj=display, q=ichar ,variablesText = variables :self.clear(storeObj, variablesText))
-
         for numButton in ("123", "456", "789"):
          FunctionNum = iCalc(self, TOP)
          for number in numButton:
              button(FunctionNum, LEFT, number, lambda text=variables, q=number: self.onPressNumber(q, text))
 
-        EqualButton = iCalc(self, TOP)
-        for iEquals in "=":
-            if iEquals == '=':
-                btniEquals = button(EqualButton, LEFT, iEquals)
-                btniEquals.bind('<ButtonRelease-1>', lambda e,s=self,
-                                storeObj=display: s.calc(storeObj), '+')
-
-
-            else:
-                btniEquals = button(EqualButton, LEFT, iEquals,
-                                    lambda storeObj=display, s=' %s ' % iEquals: storeObj.set
-                                    (storeObj.get() + s))
+        erase = iCalc(self, TOP)
+        button(erase, LEFT, 'C', lambda storeObj=display, q='C', variablesText=variables: self.clear(storeObj, variablesText))
+        btniEquals = button(erase, LEFT, '=')
+        btniEquals.bind('<ButtonRelease-1>', lambda e,s=self,
+                        storeObj=display: s.calc(storeObj), '+')
 
     def calc(self, display):
         try:
             x1 = (-self.y + math.sqrt((self.y ** 2) - (4 * (self.x * self.z)))) / (2 * self.x)
             x2 = (-self.y - math.sqrt((self.y ** 2) - (4 * (self.x * self.z)))) / (2 * self.x)
-            display.set("X1="+x1 +" x2="+x2)
+            display.set("X1="+x1 +" X2=" + x2)
         except:
             display.set("ERROR")
 
