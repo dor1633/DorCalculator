@@ -45,7 +45,7 @@ class app(Frame):
         erase = iCalc(self, TOP)
         button(erase, LEFT, 'C', lambda storeObj=display, variablesText=variables: self.clear(storeObj, variablesText))
         button(erase, LEFT, '-',
-               lambda: self.updateSignToMinus())
+               lambda: self.updateSignToMinus(variables))
         btniEquals = button(erase, LEFT, '=')
         btniEquals.bind('<ButtonRelease-1>', lambda e, variablesText=variables,
                         displayResult=display: self.onPressEqualButton(variablesText, displayResult))
@@ -60,16 +60,11 @@ class app(Frame):
             self.currVariableInEquationIndex += 1
         elif (self.currVariableInEquationIndex == 3):
             try:
-                print(self.a)
-                print(self.b)
-                print(self.c)
-                print(type(self.b))
-                print("x1" + math.sqrt(self.b ** 2))
-                x1 = (-self.b + math.sqrt((self.b ** 2) - (4 * (self.a * self.c)))) / (2 * self.a)
-                x2 = (-self.b - math.sqrt((self.b ** 2) - (4 * (self.a * self.c)))) / (2 * self.a)
-                displayResult.set("X1=" + x1 + " X2=" + x2)
+                x1 = round((-self.b + math.sqrt((self.b ** 2) - (4 * (self.a * self.c)))) / (2 * self.a), 2)
+                x2 = round((-self.b - math.sqrt((self.b ** 2) - (4 * (self.a * self.c)))) / (2 * self.a), 2)
+                displayResult.set("X1=" + str(x1) + " X2=" + str(x2))
             except:
-                displayResult.set("ERROR")
+                displayResult.set("Math error")
 
         variablesText.set(variablesText.get() + addedText)
 
@@ -82,20 +77,21 @@ class app(Frame):
         resultText.set('')
         variablesText.set('X=')
 
-    def updateSignToMinus(self):
+    def updateSignToMinus(self, variablesText):
         self.numberSign = -1
+        variablesText.set(variablesText.get() + '-')
 
     def onPressNumber(self, number, text):
         variablesText = ''
-        intNumber = int(number) * self.numberSign
+        intNumber = int(number)
         if(self.currVariableInEquationIndex == 1):
-            self.a = (self.a * 10) + intNumber
+            self.a = ((self.a * 10) + intNumber) * self.numberSign
             variablesText = text.get() + str(intNumber)
         elif(self.currVariableInEquationIndex == 2):
-            self.b = (self.b * 10) + intNumber
+            self.b = ((self.b * 10) + intNumber) * self.numberSign
             variablesText = text.get() + str(intNumber)
         elif(self.currVariableInEquationIndex == 3):
-            self.c = (self.c * 10) + intNumber
+            self.c = ((self.c * 10) + intNumber) * self.numberSign
             variablesText = text.get() + str(intNumber)
 
         text.set(variablesText)
