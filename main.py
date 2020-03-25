@@ -1,5 +1,5 @@
 from Tkinter import *
-
+import math
 # look at https://www.simplifiedpython.net/python-calculator/
 
 def iCalc(source, side):
@@ -14,9 +14,11 @@ def button(source, side, text, command=None):
 
 class app(Frame):
     def __init__(self):
-        self.x = None
-        self.y = None
-        self.z = None
+        self.a = 0
+        self.b = 0
+        self.c = 0
+        self.currVariableInEquationIndex = 1
+        self.numberSign = 1
         Frame.__init__(self)
         self.option_add('*Font', 'arial 20 bold')
         self.pack(expand = YES, fill =BOTH)
@@ -35,50 +37,65 @@ class app(Frame):
               , bd=30, bg="snow").pack(side=TOP,
                                               expand=YES, fill=BOTH)
 
-        for clearButton in (["C"]):
-            erase = iCalc(self, TOP)
-            for ichar in clearButton:
-                button(erase, LEFT, ichar, lambda
-                    storeObj=display, q=ichar: storeObj.set(''))
-
         for numButton in ("123", "456", "789"):
          FunctionNum = iCalc(self, TOP)
          for number in numButton:
              button(FunctionNum, LEFT, number, lambda text=variables, q=number: self.onPressNumber(q, text))
 
-        EqualButton = iCalc(self, TOP)
-        for iEquals in "=":
-            if iEquals == '=':
-                btniEquals = button(EqualButton, LEFT, iEquals)
-                btniEquals.bind('<ButtonRelease-1>', lambda e,s=self,
-                                storeObj=display: s.calc(storeObj), '+')
+        erase = iCalc(self, TOP)
+        button(erase, LEFT, 'C', lambda storeObj=display, variablesText=variables: self.clear(storeObj, variablesText))
+        button(erase, LEFT, '-',
+               lambda: self.updateSignToMinus(variables))
+        btniEquals = button(erase, LEFT, '=')
+        btniEquals.bind('<ButtonRelease-1>', lambda e, variablesText=variables,
+                        displayResult=display: self.onPressEqualButton(variablesText, displayResult))
 
-
-            else:
-                btniEquals = button(EqualButton, LEFT, iEquals,
-                                    lambda storeObj=display, s=' %s ' % iEquals: storeObj.set
-                                    (storeObj.get() + s))
-
-    def calc(self, display):
+    def onPressEqualButton(self, variablesText, displayResult):
+        addedText = ''
+        if (self.currVariableInEquationIndex < 3):
+            if(self.currVariableInEquationIndex == 1):
+                addedText = ' Y='
+            elif (self.currVariableInEquationIndex == 2):
+                addedText = ' Z='
+            self.currVariableInEquationIndex += 1
+        elif (self.currVariableInEquationIndex == 3):
             try:
-                display.set(eval(display.get()))
+                x1 = round((-self.b + math.sqrt((self.b ** 2) - (4 * (self.a * self.c)))) / (2 * self.a), 2)
+                x2 = round((-self.b - math.sqrt((self.b ** 2) - (4 * (self.a * self.c)))) / (2 * self.a), 2)
+                displayResult.set("X1=" + str(x1) + " X2=" + str(x2))
             except:
-                display.set("ERROR")
+                displayResult.set("Math error")
+
+        variablesText.set(variablesText.get() + addedText)
+
+    def clear(self, resultText, variablesText):
+        self.a = 0
+        self.b = 0
+        self.c = 0
+        self.currVariableInEquationIndex = 1
+        self.numberSign = 1
+        resultText.set('')
+        variablesText.set('X=')
+
+    def updateSignToMinus(self, variablesText):
+        self.numberSign = -1
+        variablesText.set(variablesText.get() + '-')
 
     def onPressNumber(self, number, text):
         variablesText = ''
-        if(self.x == None):
-            self.x = number
-            variablesText = text.get() + self.x + ' Y='
-        elif(self.y == None):
-            self.y = number
-            variablesText = text.get() + self.y + ' Z='
-        elif(self.z == None):
-            self.z = number
-            variablesText = text.get() + self.z
+        intNumber = int(number)
+        if(self.currVariableInEquationIndex == 1):
+            self.a = ((self.a * 10) + intNumber) * self.numberSign
+            variablesText = text.get() + str(intNumber)
+        elif(self.currVariableInEquationIndex == 2):
+            self.b = ((self.b * 10) + intNumber) * self.numberSign
+            variablesText = text.get() + str(intNumber)
+        elif(self.currVariableInEquationIndex == 3):
+            self.c = ((self.c * 10) + intNumber) * self.numberSign
+            variablesText = text.get() + str(intNumber)
 
         text.set(variablesText)
-
+        self.numberSign = 1
 
 if __name__=='__main__':
  app().mainloop()
